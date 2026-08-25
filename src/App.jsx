@@ -76,53 +76,26 @@ export default function ClipIAApp() {
     setStoryboardListo(false);
     setResultTab("guion");
 
-    const systemPrompt = `Eres un guionista profesional especializado en videos narrados de formato vertical para el nicho "${nicho.label}". Escribes en español neutro, natural para narración en voz alta.
-
-Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin markdown. Estructura exacta:
-{
-  "titulo": "string",
-  "gancho": "string - 2-3 frases que enganchan de inmediato",
-  "escenas": [{"numero": 1, "titulo": "string corto", "narracion": "string 3-5 frases", "sugerencia_visual": "string"}],
-  "cierre": "string - cierre con llamado a la acción"
-}
-El array "escenas" debe tener exactamente ${duracion.blocks} escenas coherentes entre sí. Tono: ${tono.label} (${tono.desc}).`;
-
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/generar-guion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1500,
-          system: systemPrompt,
-          messages: [{ role: "user", content: `Tema: ${tema}` }],
+          nicho: nicho.label,
+          tema,
+          tono: tono.label,
+          tonoDesc: tono.desc,
+          escenas: duracion.blocks,
         }),
       });
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`API respondió ${response.status}: ${errText.slice(0, 200)}`);
-      }
-
       const data = await response.json();
-      const raw = data.content?.map((b) => (b.type === "text" ? b.text : "")).join("") || "";
 
-      if (!raw.trim()) {
-        throw new Error("La respuesta llegó vacía.");
+      if (!response.ok) {
+        throw new Error(data.error || `Error ${response.status}`);
       }
 
-      let clean = raw.replace(/```json|```/g, "").trim();
-      const firstBrace = clean.indexOf("{");
-      const lastBrace = clean.lastIndexOf("}");
-      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        clean = clean.slice(firstBrace, lastBrace + 1);
-      }
-
-      const parsed = JSON.parse(clean);
-      if (!parsed.titulo || !parsed.gancho || !Array.isArray(parsed.escenas) || !parsed.cierre) {
-        throw new Error("El guion llegó incompleto (faltan campos).");
-      }
-      setGuion(parsed);
+      setGuion(data);
     } catch (e) {
       setError(`No se pudo generar el guion: ${e.message || "error desconocido"}`);
     } finally {
