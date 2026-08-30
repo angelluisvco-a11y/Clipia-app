@@ -35,11 +35,18 @@ const VOCES = [
   { id: "v4", nombre: "Darío", genero: "Hombre", rasgo: "Susurrante, tenso", tier: "premium" },
 ];
 const ESTILOS = [
-  { id: "cinematico", label: "Cinemático", tier: "free", grad: "linear-gradient(135deg,#2B2620,#4A3B22,#C9A24B)" },
-  { id: "realista", label: "Realista", tier: "free", grad: "linear-gradient(135deg,#1F2A24,#3D5647,#8FAE95)" },
-  { id: "anime", label: "Anime", tier: "premium", grad: "linear-gradient(135deg,#2A1E3A,#6E3F82,#E88BC8)" },
-  { id: "comic", label: "Cómic", tier: "premium", grad: "linear-gradient(135deg,#2E1A14,#8C3A22,#E8A23B)" },
+  { id: "cinematico", label: "Cinemático", tier: "free", grad: "linear-gradient(135deg,#2B2620,#4A3B22,#C9A24B)", suffix: "cinematic lighting, movie still, dramatic, high detail" },
+  { id: "realista", label: "Realista", tier: "free", grad: "linear-gradient(135deg,#1F2A24,#3D5647,#8FAE95)", suffix: "photorealistic, natural lighting, high detail photo" },
+  { id: "anime", label: "Anime", tier: "premium", grad: "linear-gradient(135deg,#2A1E3A,#6E3F82,#E88BC8)", suffix: "anime style, vibrant colors, manga art, detailed" },
+  { id: "comic", label: "Cómic", tier: "premium", grad: "linear-gradient(135deg,#2E1A14,#8C3A22,#E8A23B)", suffix: "comic book style, bold outlines, pop art, vibrant" },
 ];
+
+function construirUrlImagen(descripcion, estiloId, seed) {
+  const estilo = ESTILOS.find((e) => e.id === estiloId) || ESTILOS[0];
+  const promptCompleto = `${descripcion}, ${estilo.suffix}`;
+  const codificado = encodeURIComponent(promptCompleto);
+  return `https://image.pollinations.ai/prompt/${codificado}?width=480&height=854&nologo=true&seed=${seed}`;
+}
 
 const STEPS = ["nicho", "tema", "tono", "duracion", "voz", "estilo", "resumen", "resultado"];
 
@@ -66,7 +73,7 @@ export default function ClipIAApp() {
   const [storyboardListo, setStoryboardListo] = useState(false);
   const [generandoStoryboard, setGenerandoStoryboard] = useState(false);
   const [escenaAnimando, setEscenaAnimando] = useState(null);
-
+  const [imagenesEscenas, setImagenesEscenas] = useState({});
   function next() { setStep((s) => Math.min(s + 1, STEPS.length - 1)); }
   function back() { setStep((s) => Math.max(s - 1, 0)); }
 
@@ -148,8 +155,15 @@ export default function ClipIAApp() {
     }
   }
   function generarStoryboard() {
+    if (!guion) return;
     setGenerandoStoryboard(true);
-    setTimeout(() => { setGenerandoStoryboard(false); setStoryboardListo(true); }, 2000);
+    const nuevasImagenes = {};
+    guion.escenas.forEach((e) => {
+      const seedUnico = Date.now() + e.numero;
+      nuevasImagenes[e.numero] = construirUrlImagen(e.sugerencia_visual || e.titulo, estilo.id, seedUnico);
+    });
+    setImagenesEscenas(nuevasImagenes);
+    setTimeout(() => { setGenerandoStoryboard(false); setStoryboardListo(true); }, 600);
   }
   function copiarGuion() {
     if (!guion) return;
@@ -374,15 +388,26 @@ export default function ClipIAApp() {
                                 <div key={e.numero} style={styles.storyCard}
                                   onClick={() => setEscenaAnimando(playing ? null : e.numero)}>
                                   <div style={{
-                                    ...styles.storyVisual, background: estilo.grad,
-                                    transform: playing ? "scale(1.08)" : "scale(1)", transition: "transform 5s ease-out",
+                                    ...styles.storyVisual, background: estilo.grad, overflow: "hidden",
                                   }}>
+                                    {imagenesEscenas[e.numero] && (
+                                      <img
+                                        src={imagenesEscenas[e.numero]}
+                                        alt={e.titulo}
+                                        style={{
+                                          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+                                          transform: playing ? "scale(1.15)" : "scale(1)",
+                                          transition: "transform 6s ease-out",
+                                        }}
+                                      />
+                                    )}
                                     <div style={styles.playDot}>{playing ? <Pause size={12} color="#fff" /> : <Play size={12} color="#fff" />}</div>
                                     {playing && <span style={styles.liveBadge}>● animando</span>}
                                   </div>
                                   <div style={{ padding: "8px 10px" }}>
                                     <div style={{ fontSize: 11, fontWeight: 700, color: "#C9A24B" }}>{e.titulo}</div>
                                   </div>
+                                </div>
                                 </div>
                               );
                             })}
