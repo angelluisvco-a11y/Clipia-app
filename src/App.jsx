@@ -408,7 +408,6 @@ export default function ClipIAApp() {
                                     <div style={{ fontSize: 11, fontWeight: 700, color: "#C9A24B" }}>{e.titulo}</div>
                                   </div>
                                 </div>
-                                </div>
                               );
                             })}
                           </div>
