@@ -35,10 +35,10 @@ const VOCES = [
   { id: "v4", nombre: "Darío", genero: "Hombre", rasgo: "Susurrante, tenso", tier: "premium" },
 ];
 const ESTILOS = [
-  { id: "cinematico", label: "Cinemático", tier: "free", grad: "linear-gradient(135deg,#2B2620,#4A3B22,#C9A24B)", suffix: "cinematic lighting, movie still, dramatic, high detail" },
-  { id: "realista", label: "Realista", tier: "free", grad: "linear-gradient(135deg,#1F2A24,#3D5647,#8FAE95)", suffix: "photorealistic, natural lighting, high detail photo" },
-  { id: "anime", label: "Anime", tier: "premium", grad: "linear-gradient(135deg,#2A1E3A,#6E3F82,#E88BC8)", suffix: "anime style, vibrant colors, manga art, detailed" },
-  { id: "comic", label: "Cómic", tier: "premium", grad: "linear-gradient(135deg,#2E1A14,#8C3A22,#E8A23B)", suffix: "comic book style, bold outlines, pop art, vibrant" },
+  { id: "cinematico", label: "Cinemático", tier: "free", grad: "linear-gradient(135deg,#2B2620,#4A3B22,#C9A24B)", suffix: "cinematic lighting, movie still, dramatic, high detail", thumb: "https://image.pollinations.ai/prompt/a%20lone%20warrior%20standing%20on%20a%20mountain%20cliff%20at%20sunset%2C%20cinematic%20lighting%2C%20movie%20still%2C%20dramatic%2C%20high%20detail?width=300&height=300&nologo=true&seed=42" },
+  { id: "realista", label: "Realista", tier: "free", grad: "linear-gradient(135deg,#1F2A24,#3D5647,#8FAE95)", suffix: "photorealistic, natural lighting, high detail photo", thumb: "https://image.pollinations.ai/prompt/a%20lone%20warrior%20standing%20on%20a%20mountain%20cliff%20at%20sunset%2C%20photorealistic%2C%20natural%20lighting%2C%20high%20detail%20photo?width=300&height=300&nologo=true&seed=42" },
+  { id: "anime", label: "Anime", tier: "premium", grad: "linear-gradient(135deg,#2A1E3A,#6E3F82,#E88BC8)", suffix: "anime style, vibrant colors, manga art, detailed", thumb: "https://image.pollinations.ai/prompt/a%20lone%20warrior%20standing%20on%20a%20mountain%20cliff%20at%20sunset%2C%20anime%20style%2C%20vibrant%20colors%2C%20manga%20art%2C%20detailed?width=300&height=300&nologo=true&seed=42" },
+  { id: "comic", label: "Cómic", tier: "premium", grad: "linear-gradient(135deg,#2E1A14,#8C3A22,#E8A23B)", suffix: "comic book style, bold outlines, pop art, vibrant", thumb: "https://image.pollinations.ai/prompt/a%20lone%20warrior%20standing%20on%20a%20mountain%20cliff%20at%20sunset%2C%20comic%20book%20style%2C%20bold%20outlines%2C%20pop%20art%2C%20vibrant?width=300&height=300&nologo=true&seed=42" },
 ];
 
 function construirUrlImagen(descripcion, estiloId, seed) {
@@ -271,8 +271,11 @@ export default function ClipIAApp() {
               <div style={styles.grid2}>
                 {ESTILOS.map((e) => {
                   const active = estilo.id === e.id;
-                  return (<button key={e.id} onClick={() => setEstilo(e)} style={{ ...styles.estiloTile, ...(active ? { outline: "2px solid #C9A24B" } : {}) }}>
-                      <div style={{ height: 54, borderRadius: 6, background: e.grad, marginBottom: 6 }} />
+                  return (
+                    <button key={e.id} onClick={() => setEstilo(e)} style={{ ...styles.estiloTile, ...(active ? { outline: "2px solid #C9A24B" } : {}) }}>
+                      <div style={{ height: 54, borderRadius: 6, background: e.grad, marginBottom: 6, overflow: "hidden" }}>
+                        <img src={e.thumb} alt={e.label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      </div>
                       <span style={{ fontSize: 12, fontWeight: 700, color: "#E8E4DC" }}>{e.label}</span>
                       {e.tier === "premium" && <Lock size={10} style={{ position: "absolute", top: 8, right: 8, color: "#8A8478" }} />}
                     </button>
