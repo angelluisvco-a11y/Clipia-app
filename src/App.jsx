@@ -159,7 +159,7 @@ export default function ClipIAApp() {
     setGenerandoStoryboard(true);
     const nuevasImagenes = {};
     guion.escenas.forEach((e) => {
-      const seedUnico = Date.now() + e.numero;
+      const seedUnico = Math.floor(Math.random() * 2000000000) + e.numero;
       nuevasImagenes[e.numero] = construirUrlImagen(e.sugerencia_visual || e.titulo, estilo.id, seedUnico);
     });
     setImagenesEscenas(nuevasImagenes);
