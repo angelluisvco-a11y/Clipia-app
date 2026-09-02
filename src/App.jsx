@@ -45,7 +45,7 @@ function construirUrlImagen(descripcion, estiloId, seed) {
   const estilo = ESTILOS.find((e) => e.id === estiloId) || ESTILOS[0];
   const promptCompleto = `${descripcion}, ${estilo.suffix}`;
   const codificado = encodeURIComponent(promptCompleto);
-  return `https://image.pollinations.ai/prompt/${codificado}?width=480&height=854&nologo=true&seed=${seed}`;
+  return `https://image.pollinations.ai/prompt/${codificado}?width=480&height=854&nologo=true&seed=${seed}&model=flux`;
 }
 
 const STEPS = ["nicho", "tema", "tono", "duracion", "voz", "estilo", "resumen", "resultado"];
