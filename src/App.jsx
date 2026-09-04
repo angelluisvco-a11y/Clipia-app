@@ -157,15 +157,20 @@ export default function ClipIAApp() {
   }
   function generarStoryboard() {
     if (!guion) return;
+  function generarStoryboard() {
+    if (!guion) return;
     setImagenesEscenas({});
     setStoryboardListo(true);
     setGenerandoStoryboard(false);
+    const semillaFija = Math.floor(Math.random() * 2000000000);
+    setSemillaVideo(semillaFija);
+    const personaje = guion.personaje_visual ? `${guion.personaje_visual}, ` : "";
     let indice = 0;
     function generarSiguiente() {
       if (indice >= guion.escenas.length) return;
       const e = guion.escenas[indice];
-      const seedUnico = Math.floor(Math.random() * 2000000000) + e.numero;
-      const url = construirUrlImagen(e.sugerencia_visual || e.titulo, estilo.id, seedUnico);
+      const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo);
+      const url = construirUrlImagen(descripcionCompleta, estilo.id, semillaFija);
       setImagenesEscenas((prev) => ({ ...prev, [e.numero]: url }));
       indice++;
       setTimeout(generarSiguiente, 16000);
