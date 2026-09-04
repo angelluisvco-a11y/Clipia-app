@@ -74,6 +74,7 @@ export default function ClipIAApp() {
   const [generandoStoryboard, setGenerandoStoryboard] = useState(false);
   const [escenaAnimando, setEscenaAnimando] = useState(null);
   const [imagenesEscenas, setImagenesEscenas] = useState({});
+  const [semillaVideo, setSemillaVideo] = useState(null);
   function next() { setStep((s) => Math.min(s + 1, STEPS.length - 1)); }
   function back() { setStep((s) => Math.max(s - 1, 0)); }
 
