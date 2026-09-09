@@ -2,8 +2,7 @@ export default async function handler(req, res) {
   const accountId = process.env.CF_ACCOUNT_ID;
   const apiToken = process.env.CF_API_TOKEN;
 
-  const prompt = "9th-century Cordoba Spain. Abbas Ibn Firnas wearing a wooden winged suit covered in bird feathers, jumping from a tall stone tower, realistic cinematic lighting";
-
+  const prompt = req.query.prompt || "a cat playing piano";
   try {
     const response = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`,
