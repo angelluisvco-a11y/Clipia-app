@@ -22,10 +22,10 @@ Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin markdo
   "titulo": "string - título llamativo",
   "personaje_visual": "string en inglés - descripción física fija y detallada del personaje o elemento visual principal del video (apariencia, ropa, colores), para repetir igual en cada escena y mantener consistencia visual",
   "gancho": "string - 2-3 frases que enganchan de inmediato",
-  "escenas": [{"numero": 1, "titulo": "string corto", "narracion": "string 3-5 frases", "sugerencia_visual": "string"}],
+  "escenas": [{"numero": 1, "titulo": "string muy corto", "narracion": "string 1-2 frases cortas", "sugerencia_visual": "string"}],
   "cierre": "string - cierre con llamado a la acción"
 }
-El array "escenas" debe tener exactamente ${cantidadEscenas} escenas coherentes entre sí, desarrollando el tema de forma progresiva. Tono: ${tono} (${tonoDesc}).
+El array "escenas" debe tener exactamente ${cantidadEscenas} escenas cortas y coherentes entre sí, desarrollando el tema de forma progresiva. Cada escena narra solo 1-2 frases (para que el video cambie de imagen seguido y no se sienta estático). Tono: ${tono} (${tonoDesc}).
 
 Tema: ${tema}`;
 
