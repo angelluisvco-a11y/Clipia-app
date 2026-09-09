@@ -24,9 +24,9 @@ const TONOS = [
   { id: "misterioso", label: "Misterioso", desc: "Tenso, intrigante" },
 ];
 const DURACIONES = [
-  { id: "corta", label: "3 min", blocks: 3 },
-  { id: "media", label: "5 min", blocks: 4 },
-  { id: "larga", label: "8 min", blocks: 6 },
+  { id: "corta", label: "3 min", blocks: 7 },
+  { id: "media", label: "5 min", blocks: 10 },
+  { id: "larga", label: "8 min", blocks: 15 },
 ];
 const VOCES = [
   { id: "v1", nombre: "Mateo", genero: "Hombre", rasgo: "Grave, cinematográfico", tier: "free" },
