@@ -388,6 +388,7 @@ export default function ClipIAApp() {
                         {!storyboardListo && !generandoStoryboard && (
                           <div style={styles.centerPad}>
                             <button onClick={generarStoryboard} style={styles.ctaSmall}><Clapperboard size={13} /> Generar storyboard</button>
+                            <p style={{ ...styles.emptyText, marginTop: 10 }}>Puede tardar varios minutos ({guion?.escenas?.length || 0} imágenes, ~16 seg cada una) ☕</p>
                           </div>
                         )}
                         {generandoStoryboard && (
