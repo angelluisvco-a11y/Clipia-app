@@ -157,8 +157,6 @@ export default function ClipIAApp() {
   }
   function generarStoryboard() {
     if (!guion) return;
-  function generarStoryboard() {
-    if (!guion) return;
     setImagenesEscenas({});
     setStoryboardListo(true);
     setGenerandoStoryboard(false);
