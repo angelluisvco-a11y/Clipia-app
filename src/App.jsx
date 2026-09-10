@@ -187,7 +187,27 @@ export default function ClipIAApp() {
     }
     generarSiguiente();
   }
-  
+  async function regenerarEscena(numeroEscena) {
+    if (!guion) return;
+    const e = guion.escenas.find((esc) => esc.numero === numeroEscena);
+    if (!e) return;
+    const personaje = guion.personaje_visual ? `${guion.personaje_visual}, ` : "";
+    const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo) + `, ${estilo.suffix}`;
+    setImagenesEscenas((prev) => ({ ...prev, [numeroEscena]: null }));
+    try {
+      const response = await fetch("/api/generar-imagen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: descripcionCompleta }),
+      });
+      const data = await response.json();
+      if (response.ok && data.imagen) {
+        setImagenesEscenas((prev) => ({ ...prev, [numeroEscena]: data.imagen }));
+      }
+    } catch (err) {
+      console.error("Error regenerando escena", numeroEscena, err);
+    }
+  }
   function copiarGuion() {
     if (!guion) return;
     const texto = [guion.titulo, "", guion.gancho, ...guion.escenas.map((e) => `${e.titulo}\n${e.narracion}`), guion.cierre].join("\n\n");
@@ -411,11 +431,12 @@ export default function ClipIAApp() {
                             {guion.escenas.map((e) => {
                               const playing = escenaAnimando === e.numero;
                               return (
-                                <div key={e.numero} style={styles.storyCard}
-                                  onClick={() => setEscenaAnimando(playing ? null : e.numero)}>
-                                  <div style={{
-                                    ...styles.storyVisual, background: estilo.grad, overflow: "hidden",
-                                  }}>
+                              <div key={e.numero} style={styles.storyCard}>
+                                  <div
+                                    onClick={() => setEscenaAnimando(playing ? null : e.numero)}
+                                    style={{
+                                      ...styles.storyVisual, background: estilo.grad, overflow: "hidden",
+                                    }}>
                                     {imagenesEscenas[e.numero] && (
                                       <img
                                         src={imagenesEscenas[e.numero]}
@@ -429,11 +450,17 @@ export default function ClipIAApp() {
                                     )}
                                     <div style={styles.playDot}>{playing ? <Pause size={12} color="#fff" /> : <Play size={12} color="#fff" />}</div>
                                     {playing && <span style={styles.liveBadge}>● animando</span>}
+                                    <button
+                                      onClick={(ev) => { ev.stopPropagation(); regenerarEscena(e.numero); }}
+                                      style={styles.regenBtn}
+                                    >
+                                      <RotateCcw size={12} color="#fff" />
+                                    </button>
                                   </div>
                                   <div style={{ padding: "8px 10px" }}>
                                     <div style={{ fontSize: 11, fontWeight: 700, color: "#C9A24B" }}>{e.titulo}</div>
                                   </div>
-                                </div>
+                                </div>  
                               );
                             })}
                           </div>
@@ -567,5 +594,6 @@ const styles = {
   storyVisual: { position: "relative", height: 70, display: "flex", alignItems: "center", justifyContent: "center" },
   playDot: { width: 26, height: 26, borderRadius: "50%", background: "rgba(0,0,0,0.35)", display: "flex", alignItems: "center", justifyContent: "center" },
   liveBadge: { position: "absolute", top: 6, left: 6, fontSize: 8.5, color: "#fff", background: "rgba(0,0,0,0.4)", padding: "2px 6px", borderRadius: 20 },
+  regenBtn: { position: "absolute", bottom: 6, right: 6, width: 26, height: 26, borderRadius: "50%", background: "rgba(0,0,0,0.5)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" },
   restartBtn: { marginTop: 12, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: "transparent", border: "1px solid #2A2620", borderRadius: 8, padding: "10px", color: "#B8B2A4", fontSize: 12.5, cursor: "pointer" },
 };
