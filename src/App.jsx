@@ -159,19 +159,31 @@ export default function ClipIAApp() {
     if (!guion) return;
     setImagenesEscenas({});
     setStoryboardListo(true);
-    setGenerandoStoryboard(false);
-    const semillaFija = Math.floor(Math.random() * 2000000000);
-    setSemillaVideo(semillaFija);
+    setGenerandoStoryboard(true);
     const personaje = guion.personaje_visual ? `${guion.personaje_visual}, ` : "";
     let indice = 0;
-    function generarSiguiente() {
-      if (indice >= guion.escenas.length) return;
+    async function generarSiguiente() {
+      if (indice >= guion.escenas.length) {
+        setGenerandoStoryboard(false);
+        return;
+      }
       const e = guion.escenas[indice];
-      const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo);
-      const url = construirUrlImagen(descripcionCompleta, estilo.id, semillaFija);
-      setImagenesEscenas((prev) => ({ ...prev, [e.numero]: url }));
+      const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo) + `, ${estilo.suffix}`;
+      try {
+        const response = await fetch("/api/generar-imagen", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: descripcionCompleta }),
+        });
+        const data = await response.json();
+        if (response.ok && data.imagen) {
+          setImagenesEscenas((prev) => ({ ...prev, [e.numero]: data.imagen }));
+        }
+      } catch (err) {
+        console.error("Error generando imagen de escena", e.numero, err);
+      }
       indice++;
-      setTimeout(generarSiguiente, 16000);
+      generarSiguiente();
     }
     generarSiguiente();
   }
@@ -386,7 +398,6 @@ export default function ClipIAApp() {
                         {!storyboardListo && !generandoStoryboard && (
                           <div style={styles.centerPad}>
                             <button onClick={generarStoryboard} style={styles.ctaSmall}><Clapperboard size={13} /> Generar storyboard</button>
-                            <p style={{ ...styles.emptyText, marginTop: 10 }}>Puede tardar varios minutos ({guion?.escenas?.length || 0} imágenes, ~16 seg cada una) ☕</p>
                           </div>
                         )}
                         {generandoStoryboard && (
