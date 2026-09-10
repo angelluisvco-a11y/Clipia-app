@@ -22,7 +22,7 @@ Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin markdo
   "titulo": "string - título llamativo",
   "personaje_visual": "string en inglés, o cadena vacía \"\" - SOLO completa este campo si la historia gira en torno a UN mismo personaje o narrador reconocible a lo largo de todo el video (ej. una persona contando su historia). Si es contenido tipo documental/curiosidades/datos que abarca distintas épocas, lugares o personas (como este ejemplo), deja este campo como cadena vacía \"\".",
   "gancho": "string - 2-3 frases que enganchan de inmediato",
-  "escenas": [{"numero": 1, "titulo": "string muy corto", "narracion": "string 1-2 frases cortas", "sugerencia_visual": "string"}],
+  "escenas": [{"numero": 1, "titulo": "string muy corto", "narracion": "string 1-2 frases cortas", "sugerencia_visual": "string en inglés, MUY concreto y específico: [sujeto principal exacto], [acción exacta que realiza], [lugar/época exacta], [1-2 detalles visuales clave]. Evita descripciones abstractas o poéticas, usa sustantivos y verbos directos."}],
   "cierre": "string - cierre con llamado a la acción"
 }
 El array "escenas" debe tener exactamente ${cantidadEscenas} escenas cortas y coherentes entre sí, desarrollando el tema de forma progresiva. Cada escena narra solo 1-2 frases (para que el video cambie de imagen seguido y no se sienta estático). Cada "sugerencia_visual" debe describir en inglés, de forma específica y autónoma, la época, vestuario y contexto exactos de ESA escena en particular (por ejemplo, ropa y objetos de 1760 si la escena ocurre en 1760) — nunca reutilices un mismo personaje o vestuario si la escena describe una época o contexto distinto. Tono: ${tono} (${tonoDesc}).
