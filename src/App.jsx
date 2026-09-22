@@ -43,9 +43,10 @@ const ESTILOS = [
 
 function construirUrlImagen(descripcion, estiloId, seed) {
   const estilo = ESTILOS.find((e) => e.id === estiloId) || ESTILOS[0];
-  const promptCompleto = `${descripcion}, ${estilo.suffix}`;
+  const promptCompleto = `${descripcion}, ${estilo.suffix}, sharp focus, detailed face, clear facial features, photographic detail, 8k`;
   const codificado = encodeURIComponent(promptCompleto);
-  return `https://image.pollinations.ai/prompt/${codificado}?width=480&height=854&nologo=true&seed=${seed}&model=flux`;
+  const negativo = "cartoon, video game character, fantasy armor, glowing wings, anime, watercolor, painting, illustration, sketch, abstract, deformed face, blurry face, distorted face, extra fingers, mutated hands, blurry, low quality";
+  return `https://image.pollinations.ai/prompt/${codificado}?width=720&height=1280&nologo=true&seed=${seed}&model=flux&negative_prompt=${encodeURIComponent(negativo)}`;
 }
 
 const STEPS = ["nicho", "tema", "tono", "duracion", "voz", "estilo", "resumen", "resultado"];
