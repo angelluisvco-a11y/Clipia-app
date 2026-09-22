@@ -177,26 +177,15 @@ export default function ClipIAApp() {
     generarSiguiente();
   }
   }
-  async function regenerarEscena(numeroEscena) {
+  function regenerarEscena(numeroEscena) {
     if (!guion) return;
     const e = guion.escenas.find((esc) => esc.numero === numeroEscena);
     if (!e) return;
     const personaje = guion.personaje_visual ? `${guion.personaje_visual}, ` : "";
-    const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo) + `, ${estilo.suffix}`;
-    setImagenesEscenas((prev) => ({ ...prev, [numeroEscena]: null }));
-    try {
-      const response = await fetch("/api/generar-imagen", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: descripcionCompleta }),
-      });
-      const data = await response.json();
-      if (response.ok && data.imagen) {
-        setImagenesEscenas((prev) => ({ ...prev, [numeroEscena]: data.imagen }));
-      }
-    } catch (err) {
-      console.error("Error regenerando escena", numeroEscena, err);
-    }
+    const descripcionCompleta = personaje + (e.sugerencia_visual || e.titulo);
+    const seedNuevo = Math.floor(Math.random() * 2000000000);
+    const url = construirUrlImagen(descripcionCompleta, estilo.id, seedNuevo);
+    setImagenesEscenas((prev) => ({ ...prev, [numeroEscena]: url }));
   }
   function copiarGuion() {
     if (!guion) return;
