@@ -176,7 +176,6 @@ export default function ClipIAApp() {
     }
     generarSiguiente();
   }
-  }
   function regenerarEscena(numeroEscena) {
     if (!guion) return;
     const e = guion.escenas.find((esc) => esc.numero === numeroEscena);
